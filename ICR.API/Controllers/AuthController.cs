@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ICRManagement.Application.Services;
-using ICRManagement.Domain.Model.FederationAggregate;
+using ICR.Application.Services;
+using ICR.Domain.Model.FederationAggregate;
 
-namespace ICRManagement.API.Controllers
+namespace ICR.API.Controllers
 {
     [ApiController]
     [Route("api/v1/auth")]

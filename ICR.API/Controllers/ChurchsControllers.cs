@@ -1,21 +1,21 @@
 ﻿using ICR.Application.Services;
 using ICR.Application.ViewModel;
+using ICR.Domain.Model.ChurchAggregate;
 using ICR.Domain.DTOs;
-using ICR.Domain.Model.FederationAggregate;
-using ICRManagement.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using ICR.Domain.Model.CellAggregate;
 
 namespace ICRManagement.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/federation")]
-    public class FederationController : ControllerBase
+    [Route("api/v1/churchs")]
+    public class ChurchsController : ControllerBase
     {
-        private readonly IFederationRepository _repository;
+        private readonly IChurchRepository _repository;
         private readonly IdSequenceService _seq;
 
-        public FederationController(
-            IFederationRepository repository,
+        public ChurchsController(
+            IChurchRepository repository,
             IdSequenceService seq)
         {
             _repository = repository;
@@ -24,16 +24,18 @@ namespace ICRManagement.API.Controllers
 
         // CREATE
         [HttpPost]
-        public IActionResult Create([FromBody] FederationViewModel model)
+        public IActionResult Create([FromBody] ChurchViewModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Name))
                 return BadRequest("Invalid data");
 
-            var id = _seq.GetNextId<Federation>();
-            var federation = new Federation(model.Name, id, model.MinisterId);
+            var Churchid = _seq.GetNextId<Church>();
+            var Cellid = _seq.GetNextId<Cell>();
+            var church = new Church(Churchid, model.Name, model.Address, model.FederationId, model.MinisterId);
 
-            _repository.Add(federation);
-            return CreatedAtAction(nameof(GetById), new { id }, null);
+
+            _repository.Add(church);
+            return CreatedAtAction(nameof(GetById), new { Churchid }, null);
         }
 
         // GET ALL
@@ -43,7 +45,7 @@ namespace ICRManagement.API.Controllers
         {
             var federations = _repository.Get(pageNumber, pageQuantity);
 
-            var result = federations.Select(f => new FederationViewModel
+            var result = federations.Select(f => new ChurchViewModel
             {
                 Id = f.Id,
                 Name = f.Name,
@@ -57,7 +59,7 @@ namespace ICRManagement.API.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
-            var federation = _repository.GetbyId(id);
+            var federation = _repository.GetById(id);
             if (federation == null) return NotFound();
             return Ok(federation);
         }
@@ -66,17 +68,19 @@ namespace ICRManagement.API.Controllers
         [HttpPatch("{id}")]
         public IActionResult Patch(
     [FromRoute] long id,
-    [FromForm] FederationDTO dto)
+    [FromForm] ChurchDTO dto)
         {
-            var federation = _repository.GetbyId(id);
-            if (federation == null)
+            var church = _repository.GetById(id);
+            if (church == null)
                 return NotFound();
-
             if (dto.Name != null)
-                federation.SetName(dto.Name);
-
-            if (dto.PastorId != null)
-                federation.SetPastorId(dto.PastorId.Value);
+                church.SetName(dto.Name);
+            if (dto.Address != null)
+                church.SetAddress(dto.Address);
+            if (dto.FederationId != null)
+                church.SetFederationId(dto.FederationId);
+            if (dto.MinisterId != null)
+                church.SetMinisterId(dto.MinisterId);
 
             _repository.Save();
             return NoContent();

@@ -1,11 +1,11 @@
-﻿using ICRManagement.Application.ViewModel;
-using ICRManagement.Domain.Model.FederationAggregate;
-using ICRManagement.Domain.Repositories;
+﻿using ICR.Domain.Model.ChurchAggregate;
+using ICR.Application.ViewModel;
+using ICR.Domain.Model.FederationAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ICRManagement.Infra.Repositories
+namespace ICR.Infra.Repositories
 {
     public class FederationRepository : IFederationRepository
     {
@@ -20,16 +20,10 @@ namespace ICRManagement.Infra.Repositories
         {
             _context.Federations.Add(federation);
             _context.SaveChanges();
-        }
-
-        // Usado no PATCH
-        public Federation? GetEntity(long id)
-        {
-            return _context.Federations.Find(id);
-        }
+        }       
 
         // GET by id
-        public Federation? Get(long id)
+        public Federation? GetbyId(long id)
         {
             return _context.Federations.Find(id);
         }
@@ -45,9 +39,9 @@ namespace ICRManagement.Infra.Repositories
 
         public void Delete(long id)
         {
-            var federation = GetEntity(id);
+            var federation = GetbyId(id);
             if (federation == null)
-                throw new InvalidOperationException("Federation not found");
+                throw new InvalidOperationException("Comissão Federada não encontrada");
 
             _context.Federations.Remove(federation);
             _context.SaveChanges();
@@ -56,6 +50,14 @@ namespace ICRManagement.Infra.Repositories
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public List<Church> GetChurchesByFederationId(long federationId)
+        {
+            return _context.Churches
+                .Where(c => c.FederationId == federationId)
+                .OrderBy(c => c.Name)
+                .ToList();
         }
     }
 }

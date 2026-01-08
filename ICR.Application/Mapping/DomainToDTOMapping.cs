@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using ICRManagement.Domain.DTOs;
-using ICRManagement.Domain.Model.FederationAggregate;
+using ICR.Domain.Model.FederationAggregate;
 
-namespace ICRManagement.Application.Mapping
+namespace ICR.Application.Mapping
 {
     public class DomainToDTOMapping: Profile 
     {

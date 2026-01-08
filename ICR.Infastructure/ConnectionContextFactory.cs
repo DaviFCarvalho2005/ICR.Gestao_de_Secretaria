@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace ICRManagement.Infra
+namespace ICR.Infra
 {
     public class ConnectionContextFactory : IDesignTimeDbContextFactory<ConnectionContext>
     {

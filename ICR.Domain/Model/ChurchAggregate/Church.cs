@@ -1,5 +1,4 @@
-﻿using ICRManagement.Domain.Model.FederationAggregate;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,15 +16,19 @@ namespace ICR.Domain.Model.ChurchAggregate
         [ForeignKey("FederationId")]
         public long FederationId { get; set; }
 
-        [ForeignKey("PastorId")]
-        public long? PastorId { get; set; }
-    
-        public Church(string name, Address address, long federationId, long? pastorId = null)
+        [ForeignKey("MinisterId")]
+        public long? MinisterId { get; set; }
+
+        //adicionei agora
+        protected Church() { }
+
+        public Church(long id,string name, Address address, long federationId, long? ministerId = null)
         {
+            Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Address = address ?? throw new ArgumentNullException(nameof(address));
             FederationId = federationId;
-            PastorId = pastorId;
+            MinisterId = ministerId;
         }
 
         public void SetName(string newName)
@@ -52,9 +55,9 @@ namespace ICR.Domain.Model.ChurchAggregate
             FederationId = federationId;
         }
 
-        public void SetPastorId(long? pastorId)
+        public void SetMinisterId(long? ministerId)
         {
-            PastorId = pastorId;
+            MinisterId = ministerId;
         }
     }
     

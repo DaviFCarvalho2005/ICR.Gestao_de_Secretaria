@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ICR.Domain.Model;
 using Microsoft.EntityFrameworkCore;
-using ICRManagement.Infra;
+using ICR.Infra;
 namespace ICR.Application.Services
 {
     public class IdSequenceService

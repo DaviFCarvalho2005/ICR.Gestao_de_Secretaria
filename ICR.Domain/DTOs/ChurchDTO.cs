@@ -1,0 +1,17 @@
+﻿using ICR.Domain.Model;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+
+namespace ICR.Domain.DTOs
+{
+    public class ChurchDTO
+    {
+        public string Name { get; set; }
+        public Address Address { get; set; }
+        public long FederationId { get; set; }
+        public long? MinisterId { get; set; }
+
+    }
+}

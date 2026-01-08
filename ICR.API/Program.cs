@@ -1,16 +1,15 @@
 using AutoMapper;
 using ICR.Application.Services;
-using ICRManagement.Application.Mapping;
-using ICRManagement.Application.Services;
-using ICRManagement.Domain.Repositories;
-using ICRManagement.Infra;
-using ICRManagement.Infra.Repositories;
+using ICR.Application.Mapping;
+using ICR.Infra;
+using ICR.Infra.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using ICR.Domain.Model.FederationAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();

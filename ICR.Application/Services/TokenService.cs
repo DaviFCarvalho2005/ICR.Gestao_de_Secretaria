@@ -1,11 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using ICRManagement.Domain.Model.FederationAggregate;
+using ICR.Domain.Model.FederationAggregate;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace ICRManagement.Application.Services
+namespace ICR.Application.Services
 {
     public class TokenService
     {

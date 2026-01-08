@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ICRManagement.Domain.Model.FederationAggregate
+namespace ICR.Domain.Model.FederationAggregate
 {
     [Table("federation")]
     public class Federation : BasicModel
@@ -12,15 +12,14 @@ namespace ICRManagement.Domain.Model.FederationAggregate
         public long Id { get; set; } // Identificador único da comissão
 
         public string Name { get; set; } // Nome da comissão federada
-        [ForeignKey("PastorId")]
-        public long? PastorId { get; set; }
-
+        [ForeignKey("MinisterId")]
+        public long? MinisterId { get; set; } //Id do pastor responsável pela comissão federada
         // Construtor principal
-        public Federation(string name, long id, long? pastorId)
+        public Federation(string name, long id, long? ministerId)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            PastorId = pastorId;
+            MinisterId= ministerId;
         }
         public void SetName(string newName)
         {
@@ -29,9 +28,9 @@ namespace ICRManagement.Domain.Model.FederationAggregate
 
             Name = newName;
         }
-        public void SetPastorId(long? pastorId)
+        public void SetPastorId(long? ministerId)
         {
-            PastorId = pastorId;
+            MinisterId = ministerId;
         }
     }
 }

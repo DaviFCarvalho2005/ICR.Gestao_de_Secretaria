@@ -1,14 +1,16 @@
-﻿using ICRManagement.Domain.Model.FederationAggregate;
+﻿using ICR.Domain.Model.ChurchAggregate;
 using System.Collections.Generic;
 
-namespace ICRManagement.Domain.Repositories
+namespace ICR.Domain.Model.FederationAggregate
 {
     public interface IFederationRepository
     {
         void Add(Federation federation);
-        Federation? Get(long id);
+        Federation? GetbyId(long id);
         List<Federation> Get(int pageNumber, int pageQuantity);
         void Delete(long id);
         void Save();
+
+        List<Church> GetChurchesByFederationId(long federationId);
     }
 }
