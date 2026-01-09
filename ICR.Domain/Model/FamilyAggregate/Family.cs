@@ -9,6 +9,8 @@ namespace ICR.Domain.Model.FamilyAggregate
     public class Family
     {
         public long Id { get; set; }
+        [ForeignKey("CellId")]
+        public long CellId { get; set; }
         [ForeignKey("FatherId")]
         public long? ManId { get; set; }
         [ForeignKey("MotherId")]
@@ -17,9 +19,10 @@ namespace ICR.Domain.Model.FamilyAggregate
 
 
         public Family(){ }
-        public Family(long id, long? manId, long? womanId, DateTime? weddingDate)
+        public Family(long id,long cellId, long? manId, long? womanId, DateTime? weddingDate)
         {
             Id = id;
+            CellId = cellId;
             ManId = manId;
             WomanId = womanId;
             WeddingDate = weddingDate;

@@ -42,19 +42,9 @@ namespace ICR.Infra.Repositories
                 .ToList();
         }
 
-        public List<Minister> GetAuxiliarMinisterByChurchID(long churchId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Church? GetById(long id)
         {
             return _context.Churches.Find(id);
-        }
-
-        public List<Cell> GetCellsByChurchId(long churchId)
-        {
-            throw new NotImplementedException();
         }
 
         public void Save()

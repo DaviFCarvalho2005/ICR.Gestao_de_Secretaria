@@ -3,6 +3,7 @@ using ICR.Domain.Model.ChurchAggregate;
 using ICR.Domain.Model.MinisterAggregate;
 using ICR.Domain.Model.FederationAggregate;
 using System.Collections.Generic;
+using ICR.Domain.Model.MemberAggregate;
 
 namespace ICR.Domain.Model.ChurchAggregate
 {
@@ -13,7 +14,7 @@ namespace ICR.Domain.Model.ChurchAggregate
         List<Church> Get(int pageNumber, int pageQuantity);
         void Delete(long id);
         void Save();
-        List<Cell> GetCellsByChurchId(long churchId);
-        List<Minister> GetAuxiliarMinisterByChurchID(long churchId);
+        
+
     }
 }

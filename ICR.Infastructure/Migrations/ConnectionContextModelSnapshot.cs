@@ -76,6 +76,9 @@ namespace ICR.Infastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("CellId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("ManId")
                         .HasColumnType("bigint");
 
@@ -120,9 +123,6 @@ namespace ICR.Infastructure.Migrations
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("CellId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("CellPhone")
                         .HasColumnType("text");
@@ -169,9 +169,6 @@ namespace ICR.Infastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("FamilyId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("MemberId")
                         .HasColumnType("bigint");
 
@@ -205,7 +202,7 @@ namespace ICR.Infastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Repass");
+                    b.ToTable("repass");
                 });
 
             modelBuilder.Entity("ICR.Domain.Model.UserRoleAgreggate.Role", b =>

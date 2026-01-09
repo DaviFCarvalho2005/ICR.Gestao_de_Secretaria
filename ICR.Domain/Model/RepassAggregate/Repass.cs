@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ICR.Domain.Model.RepassAggregate
 {
-    [Table("Repass")]
+    [Table("repass")]
     public class Repass
     {
         public long Id { get; set; }

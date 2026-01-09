@@ -14,9 +14,6 @@ namespace ICR.Domain.Model.MinisterAggregate
         [ForeignKey("MemberId")]
         public long MemberId { get; set; }
 
-        [ForeignKey("FamilyId")]
-        public long FamilyId { get; set; }
-
         // CPF do ministro
         public long Cpf { get; set; }
 
@@ -49,7 +46,6 @@ namespace ICR.Domain.Model.MinisterAggregate
         {
             Id = id;
             MemberId = memberId;
-            FamilyId = familyId;
             Cpf = cpf;
             Email = email ?? throw new ArgumentNullException(nameof(email));
             CardValidity = cardValidity;
@@ -62,10 +58,6 @@ namespace ICR.Domain.Model.MinisterAggregate
         public void SetMemberId(long memberId)
         {
             MemberId = memberId;
-        }
-        public void SetFamilyId(long familyId)
-        {
-            FamilyId = familyId;
         }
         public void SetCpf(long cpf)
         {

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ICR.Infastructure.Migrations
 {
     [DbContext(typeof(ConnectionContext))]
-    [Migration("20260109164856_RepassTable")]
-    partial class RepassTable
+    [Migration("20260109181832_Migrations12")]
+    partial class Migrations12
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,9 @@ namespace ICR.Infastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("CellId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("ManId")
                         .HasColumnType("bigint");
 
@@ -123,9 +126,6 @@ namespace ICR.Infastructure.Migrations
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("CellId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("CellPhone")
                         .HasColumnType("text");
@@ -172,9 +172,6 @@ namespace ICR.Infastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("FamilyId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("MemberId")
                         .HasColumnType("bigint");
 
@@ -187,6 +184,28 @@ namespace ICR.Infastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("minister");
+                });
+
+            modelBuilder.Entity("ICR.Domain.Model.RepassAggregate.Repass", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<long>("ChurchId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Reference")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("repass");
                 });
 
             modelBuilder.Entity("ICR.Domain.Model.UserRoleAgreggate.Role", b =>

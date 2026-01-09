@@ -16,7 +16,6 @@ namespace ICR.Domain.Model.MemberAggregate
         public string Name { get; set; } = null!;
         public GenderType Gender { get; set; } // 'M' | 'F'
         [ForeignKey("cells")]
-        public long CellId { get; set; }
         public string? Role { get; set; }
         public DateTime BirthDate { get; set; }
         // Classe SEMPRE preenchida pelo sistema
@@ -32,7 +31,6 @@ namespace ICR.Domain.Model.MemberAggregate
             ChurchId = churchId;
             Name = name;
             Gender = gender;
-            CellId = cellId;
             Role = role;
             BirthDate = birthDate;
             CellPhone = cellPhone;
@@ -71,10 +69,6 @@ namespace ICR.Domain.Model.MemberAggregate
         public void setGender(GenderType newGender)
         {
             Gender = newGender;
-        }
-        public void SetCellId(long cellId)
-        {
-            CellId = cellId;
         }
         public void SetRole(string? newRole)
         {

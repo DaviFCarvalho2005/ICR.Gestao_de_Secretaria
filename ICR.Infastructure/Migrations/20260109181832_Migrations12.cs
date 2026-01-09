@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ICR.Infastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Migrations12 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,6 +53,7 @@ namespace ICR.Infastructure.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CellId = table.Column<long>(type: "bigint", nullable: false),
                     ManId = table.Column<long>(type: "bigint", nullable: true),
                     WomanId = table.Column<long>(type: "bigint", nullable: true),
                     WeddingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -86,7 +87,6 @@ namespace ICR.Infastructure.Migrations
                     ChurchId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Gender = table.Column<int>(type: "integer", nullable: false),
-                    CellId = table.Column<long>(type: "bigint", nullable: false),
                     Role = table.Column<string>(type: "text", nullable: true),
                     BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CellPhone = table.Column<string>(type: "text", nullable: true),
@@ -104,7 +104,6 @@ namespace ICR.Infastructure.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MemberId = table.Column<long>(type: "bigint", nullable: false),
-                    FamilyId = table.Column<long>(type: "bigint", nullable: false),
                     Cpf = table.Column<long>(type: "bigint", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     CardValidity = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -119,6 +118,21 @@ namespace ICR.Infastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_minister", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "repass",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ChurchId = table.Column<long>(type: "bigint", nullable: false),
+                    Reference = table.Column<long>(type: "bigint", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_repass", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +201,9 @@ namespace ICR.Infastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "minister");
+
+            migrationBuilder.DropTable(
+                name: "repass");
 
             migrationBuilder.DropTable(
                 name: "roles");

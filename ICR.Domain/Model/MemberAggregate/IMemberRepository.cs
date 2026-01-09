@@ -9,7 +9,6 @@ namespace ICR.Domain.Model.MemberAggregate
         Task<Member?> GetByIdAsync(long id);
         Task<IEnumerable<Member>> GetByChurchAsync(long churchId);
         Task<IEnumerable<Member>> GetByFamilyAsync(long familyId);
-        Task<IEnumerable<Member>> GetByCellAsync(long cellId);
         Task<IEnumerable<Member>> GetBirthdaysByMonthAsync(int month, long churchId);
 
         Task AddAsync(Member member);
