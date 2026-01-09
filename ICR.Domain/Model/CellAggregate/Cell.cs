@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ICR.Domain.Model.CellAggregate
 {
+    [Table("cells")]
     public class Cell
     {
         public long Id { get; private set; }

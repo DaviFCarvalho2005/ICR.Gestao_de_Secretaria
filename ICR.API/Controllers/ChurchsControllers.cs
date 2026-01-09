@@ -30,7 +30,7 @@ namespace ICRManagement.API.Controllers
                 return BadRequest("Invalid data");
 
             var Churchid = _seq.GetNextId<Church>();
-            var Cellid = _seq.GetNextId<Cell>();
+            //var Cellid = _seq.GetNextId<Cell>();
             var church = new Church(Churchid, model.Name, model.Address, model.FederationId, model.MinisterId);
 
 
