@@ -14,4 +14,18 @@ namespace ICR.Domain.DTOs
         public long? MinisterId { get; set; }
 
     }
+
+    public class ChurchResponseDto
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public Address Address { get; set; }
+        public long FederationId { get; set; }
+        public string FederationName { get; set; }
+        public long? MinisterId { get; set; }
+        public string MinisterName { get; set; }
+
+
+    }
+
 }

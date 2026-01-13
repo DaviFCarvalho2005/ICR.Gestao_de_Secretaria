@@ -1,63 +1,63 @@
-﻿using ICR.Domain.Model.ChurchAggregate;
+﻿using ICR.Application.Services;
 using ICR.Application.ViewModel;
 using ICR.Domain.Model.FederationAggregate;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace ICR.Infra.Repositories
 {
     public class FederationRepository : IFederationRepository
     {
         private readonly ConnectionContext _context;
+        private readonly IdSequenceService _idSequenceService;
 
         public FederationRepository(ConnectionContext context)
         {
             _context = context;
+            _idSequenceService = new IdSequenceService(_context);
         }
 
-        public void Add(Federation federation)
+        // Adiciona uma nova federação
+        public async Task<IEnumerable<Federation>> AddAsync(Federation federation)
         {
-            _context.Federations.Add(federation);
-            _context.SaveChanges();
-        }       
+            // Gerando novo ID corretamente
+            var newId = await _idSequenceService.GetNextIdAsync<Federation>();
 
-        // GET by id
-        public Federation? GetbyId(long id)
-        {
-            return _context.Federations.Find(id);
+            federation.Id = newId;
+
+            await _context.Federations.AddAsync(federation);
+            await _context.SaveChangesAsync();
+
+            return await _context.Federations.ToListAsync();
         }
 
-        public List<Federation> Get(int pageNumber, int pageQuantity)
+        // Pega uma federação por ID
+        public async Task<Federation?> GetByIdAsync(long id)
         {
-            return _context.Federations
-                .OrderBy(f => f.Name)
-                .Skip((pageNumber - 1) * pageQuantity)
-                .Take(pageQuantity)
-                .ToList();
+            return await _context.Federations
+                                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        public void Delete(long id)
+        // Retorna todas as federações
+        public async Task<IEnumerable<Federation>> GetAllFederationsAsync()
         {
-            var federation = GetbyId(id);
-            if (federation == null)
-                throw new InvalidOperationException("Comissão Federada não encontrada");
+            return await _context.Federations.ToListAsync();
+        }
 
+        // Atualiza federação existente
+        
+
+        public async void UpdateAsync(Federation federation)
+        {
+            _context.Federations.Update(federation);
+            await _context.SaveChangesAsync();
+        }
+
+        public async void DeleteAsync(Federation federation)
+        {
             _context.Federations.Remove(federation);
-            _context.SaveChanges();
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-
-        public List<Church> GetChurchesByFederationId(long federationId)
-        {
-            return _context.Churches
-                .Where(c => c.FederationId == federationId)
-                .OrderBy(c => c.Name)
-                .ToList();
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -62,7 +62,7 @@ namespace ICR.Infra.Data.Repositories
             return (from minister in _context.Ministers
                     join member in _context.Members
                         on minister.MemberId equals member.Id
-                    where member.ChurchId == churchId
+                    where member.Family.ChurchId == churchId
                     select minister)
                    .ToList();
         }

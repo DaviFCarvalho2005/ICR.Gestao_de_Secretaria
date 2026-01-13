@@ -9,12 +9,20 @@ namespace ICR.Domain.Model.FamilyAggregate
     public class Family
     {
         public long Id { get; set; }
-        [ForeignKey("CellId")]
+        [ForeignKey(nameof(CellId))]
         public long CellId { get; set; }
-        [ForeignKey("FatherId")]
+        public CellAggregate.Cell Cell { get; set; }
+        [ForeignKey(nameof(ChurchId))]
+        public long ChurchId { get; set; }
+        public ChurchAggregate.Church Church { get; set; }
+
+        [ForeignKey(nameof(ManId))]
         public long? ManId { get; set; }
-        [ForeignKey("MotherId")]
+        public MemberAggregate.Member? Man { get; set; }
+        [ForeignKey(nameof(WomanId))]
         public long? WomanId { get; set; }
+        public MemberAggregate.Member? Woman { get; set; }
+
         public DateTime? WeddingDate { get; set; }
 
 

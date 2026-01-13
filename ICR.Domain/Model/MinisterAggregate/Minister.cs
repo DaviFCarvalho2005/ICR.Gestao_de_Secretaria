@@ -13,6 +13,7 @@ namespace ICR.Domain.Model.MinisterAggregate
         // FKs
         [ForeignKey("MemberId")]
         public long MemberId { get; set; }
+        public MemberAggregate.Member? Member { get; set; }
 
         // CPF do ministro
         public long Cpf { get; set; }

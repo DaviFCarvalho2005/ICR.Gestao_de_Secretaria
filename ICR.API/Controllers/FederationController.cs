@@ -1,91 +1,79 @@
 ﻿using ICR.Application.Services;
 using ICR.Application.ViewModel;
-using ICR.Domain.DTOs;
 using ICR.Domain.Model.FederationAggregate;
+using ICR.Infra.Repositories;
 using ICRManagement.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace ICRManagement.API.Controllers
+namespace ICR.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/federation")]
+    [Route("api/[controller]")]
     public class FederationController : ControllerBase
     {
         private readonly IFederationRepository _repository;
-        private readonly IdSequenceService _seq;
 
-        public FederationController(
-            IFederationRepository repository,
-            IdSequenceService seq)
+        public FederationController(IFederationRepository repository)
         {
             _repository = repository;
-            _seq = seq;
         }
 
-        // CREATE
-        [HttpPost]
-        public IActionResult Create([FromBody] FederationViewModel model)
-        {
-            if (string.IsNullOrWhiteSpace(model.Name))
-                return BadRequest("Invalid data");
-
-            var id = _seq.GetNextId<Federation>();
-            var federation = new Federation(model.Name, id, model.MinisterId);
-
-            _repository.Add(federation);
-            return CreatedAtAction(nameof(GetById), new { id }, null);
-        }
-
-        // GET ALL
+        // GET: api/federation
         [HttpGet]
-        [HttpGet]
-        public IActionResult GetAll(int pageNumber = 1, int pageQuantity = 10)
+        public async Task<ActionResult<IEnumerable<Federation>>> GetAll()
         {
-            var federations = _repository.Get(pageNumber, pageQuantity);
-
-            var result = federations.Select(f => new FederationViewModel
-            {
-                Id = f.Id,
-                Name = f.Name,
-                MinisterId = f.MinisterId
-            }).ToList();
-
-            return Ok(result);
+            var federations = await _repository.GetAllFederationsAsync();
+            return Ok(federations);
         }
 
-        // GET BY ID
+        // GET: api/federation/{id}
         [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        public async Task<ActionResult<Federation>> GetById(long id)
         {
-            var federation = _repository.GetbyId(id);
-            if (federation == null) return NotFound();
+            var federation = await _repository.GetByIdAsync(id);
+            if (federation == null)
+                return NotFound();
             return Ok(federation);
         }
 
-        // PATCH
-        [HttpPatch("{id}")]
-        public IActionResult Patch(
-    [FromRoute] long id,
-    [FromForm] FederationDTO dto)
+        // POST: api/federation
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<Federation>>> Create([FromForm] FederationViewModel model)
         {
-            var federation = _repository.GetbyId(id);
+            var federations = new Federation(0, model.Name, model.MinisterId);
+                
+            await _repository.AddAsync(federations);
+            return Ok(new
+            {
+                federations.Name,
+                federations.MinisterId
+            });
+        }
+
+        // PUT: api/federation/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(long id, [FromBody] FederationDTO updatedFederation)
+        {
+            var federation = await _repository.GetByIdAsync(id);
+            if (federation == null) return NotFound();
+            federation.SetName(updatedFederation.Name);
+            federation.SetPastorId(updatedFederation.PastorId);
+            _repository.UpdateAsync(federation);
+
+            return NoContent();
+        }
+
+        // DELETE: api/federation/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var federation = await _repository.GetByIdAsync(id);
             if (federation == null)
                 return NotFound();
 
-            if (dto.Name != null)
-                federation.SetName(dto.Name);
-
-            if (dto.PastorId != null)
-                federation.SetPastorId(dto.PastorId.Value);
-
-            _repository.Save();
-            return NoContent();
-        }
-        // DELETE
-        [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
-        {
-            _repository.Delete(id);
+            _repository.DeleteAsync(federation);
             return NoContent();
         }
     }

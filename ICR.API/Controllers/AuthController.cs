@@ -23,7 +23,7 @@ namespace ICR.API.Controllers
             {
                 var now = DateTime.UtcNow;
                 // Usa a instância injetada para gerar token
-                var token = _tokenService.GenerateToken(new Federation("Auth",long.Parse($"{now:yyyyMM}"),null ));
+                var token = _tokenService.GenerateToken(new Federation(long.Parse($"{now:yyyyMM}"),"auth", null ));
                 return Ok(token);
             }
             return BadRequest("username ou senha inválidos");

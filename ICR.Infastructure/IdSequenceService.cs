@@ -15,21 +15,30 @@ namespace ICR.Application.Services
             _context = context;
         }
 
-        public long GetNextId<T>() where T : class, BasicModel
+        public async Task<long> GetNextIdAsync<T>() where T : class, BasicModel
         {
+            // Abre a transação async
+            await using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
             var now = DateTime.UtcNow;
             var prefix = long.Parse($"{now:yyyyMM}");
             var min = prefix * 1000;
             var max = min + 999;
 
-            // pega o maior ID existente para essa entidade
-            var last = _context.Set<T>()
+            // Busca o último ID usando FirstOrDefaultAsync
+            var last = await _context.Set<T>()
                 .Where(x => x.Id >= min && x.Id <= max)
                 .OrderByDescending(x => x.Id)
                 .Select(x => x.Id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
-            return last == 0 ? min + 1 : last + 1;
+            var next = last == 0 ? min + 1 : last + 1;
+
+            if (next > max)
+                throw new InvalidOperationException("ID sequence overflow for current month.");
+
+            await transaction.CommitAsync();
+            return next;
         }
     }
 }

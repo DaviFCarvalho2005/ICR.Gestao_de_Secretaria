@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ICR.Domain.Model.FederationAggregate;
+using ICR.Domain.Model.MinisterAggregate;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,9 +17,11 @@ namespace ICR.Domain.Model.ChurchAggregate
         public Address Address { get; set; }
         [ForeignKey("FederationId")]
         public long FederationId { get; set; }
+        public Federation? Federation { get; set; }
 
         [ForeignKey("MinisterId")]
         public long? MinisterId { get; set; }
+        public Minister? Minister { get; set; }
 
         //adicionei agora
         protected Church() { }

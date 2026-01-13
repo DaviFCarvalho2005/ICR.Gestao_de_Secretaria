@@ -1,96 +1,94 @@
-﻿using ICR.Application.Services;
-using ICR.Application.ViewModel;
+﻿using ICR.Domain.DTOs;
 using ICR.Domain.Model.ChurchAggregate;
-using ICR.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using ICR.Domain.Model.CellAggregate;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace ICRManagement.API.Controllers
+namespace ICR.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/churchs")]
-    public class ChurchsController : ControllerBase
+    [Route("api/churches")]
+    public class ChurchController : ControllerBase
     {
         private readonly IChurchRepository _repository;
-        private readonly IdSequenceService _seq;
 
-        public ChurchsController(
-            IChurchRepository repository,
-            IdSequenceService seq)
+        public ChurchController(IChurchRepository repository)
         {
             _repository = repository;
-            _seq = seq;
         }
 
-        // CREATE
-        [HttpPost]
-        public IActionResult Create([FromBody] ChurchViewModel model)
-        {
-            if (string.IsNullOrWhiteSpace(model.Name))
-                return BadRequest("Invalid data");
-
-            var Churchid = _seq.GetNextId<Church>();
-            //var Cellid = _seq.GetNextId<Cell>();
-            var church = new Church(Churchid, model.Name, model.Address, model.FederationId, model.MinisterId);
-
-
-            _repository.Add(church);
-            return CreatedAtAction(nameof(GetById), new { Churchid }, null);
-        }
-
-        // GET ALL
+        // GET: api/churches?pageNumber=1&pageQuantity=10
         [HttpGet]
-        [HttpGet]
-        public IActionResult GetAll(int pageNumber = 1, int pageQuantity = 10)
+        public async Task<ActionResult<IEnumerable<ChurchResponseDto>>> GetAll(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageQuantity = 10)
         {
-            var federations = _repository.Get(pageNumber, pageQuantity);
-
-            var result = federations.Select(f => new ChurchViewModel
-            {
-                Id = f.Id,
-                Name = f.Name,
-                MinisterId = f.MinisterId
-            }).ToList();
-
-            return Ok(result);
+            var churches = await _repository.GetAllChurchsAsync(pageNumber, pageQuantity);
+            return Ok(churches);
         }
 
-        // GET BY ID
-        [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        // GET: api/churches/{id}
+        [HttpGet("{id:long}")]
+        public async Task<ActionResult<ChurchResponseDto>> GetById(long id)
         {
-            var federation = _repository.GetById(id);
-            if (federation == null) return NotFound();
-            return Ok(federation);
-        }
-
-        // PATCH
-        [HttpPatch("{id}")]
-        public IActionResult Patch(
-    [FromRoute] long id,
-    [FromForm] ChurchDTO dto)
-        {
-            var church = _repository.GetById(id);
+            var church = await _repository.GetByIdAsync(id);
             if (church == null)
                 return NotFound();
-            if (dto.Name != null)
-                church.SetName(dto.Name);
-            if (dto.Address != null)
-                church.SetAddress(dto.Address);
-            if (dto.FederationId != null)
-                church.SetFederationId(dto.FederationId);
-            if (dto.MinisterId != null)
-                church.SetMinisterId(dto.MinisterId);
 
-            _repository.Save();
-            return NoContent();
+            return Ok(church);
         }
-        // DELETE
-        [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+
+        // GET: api/churches/federation/{federationId}
+        [HttpGet("federation/{federationId:long}")]
+        public async Task<ActionResult<IEnumerable<ChurchResponseDto>>> GetByFederation(long federationId)
         {
-            _repository.Delete(id);
+            var churches = await _repository.GetChurchsbyFederationId(federationId);
+            return Ok(churches);
+        }
+
+        // POST: api/churches
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Church church)
+        {
+            await _repository.AddAsync(church);
+            await _repository.SaveAsync();
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = church.Id },
+                new
+                {
+                    church.Name,
+                    church.FederationId
+                }
+            );
+        }
+
+        // PUT: api/churches/{id}
+        [HttpPut("{id:long}")]
+        [HttpPut("{id:long}")]
+        public async Task<IActionResult> Update(long id, [FromBody] Church updatedChurch)
+        {
+            var updated = await _repository.UpdateAsync(id, updatedChurch);
+
+            if (!updated)
+                return NotFound();
+
             return NoContent();
         }
+
+
+        // DELETE: api/churches/{id}
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var deleted = await _repository.DeleteAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+
     }
 }

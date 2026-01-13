@@ -6,7 +6,6 @@ namespace ICR.Application.ViewModel
 {
     public class FederationViewModel
     {
-        public long Id { get; set; }
         public string Name { get; set; }
         public long? MinisterId { get; set; }
     }

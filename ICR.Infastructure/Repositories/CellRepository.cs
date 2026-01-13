@@ -1,58 +1,117 @@
-﻿using ICR.Domain.Model.CellAggregate;
+﻿using ICR.Application.Services;
+using ICR.Domain.DTOs;
+using ICR.Domain.Model.CellAggregate;
 using ICR.Domain.Model.MemberAggregate;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ICR.Infra.Data.Repositories
 {
     public class CellRepository : ICellRepository
     {
         private readonly ConnectionContext _context;
+        private readonly IdSequenceService _idSequenceService;
 
         public CellRepository(ConnectionContext context)
         {
             _context = context;
+            _idSequenceService = new IdSequenceService(context);
         }
 
-        public void Add(Cell cell)
+        public async Task AddAsync(Cell cell)
         {
-            _context.Cells.Add(cell);
+            var newId = await _idSequenceService.GetNextIdAsync<Cell>();
+            cell.Id = newId;
+
+            await _context.Cells.AddAsync(cell);
         }
 
-        public Cell? GetById(long id)
+        public async Task<CellResponseDTO?> GetByIdAsync(long id)
         {
-            return _context.Cells
-                .FirstOrDefault(c => c.Id == id);
+            return await _context.Cells
+                .Include(c => c.Church)
+                .Include(c => c.Responsible)
+                .Where(c => c.Id == id)
+                .Select(c => new CellResponseDTO(
+                    c.Id,
+                    c.Name,
+                    c.ChurchId,
+                    c.Church.Name,
+                    c.ResponsibleId,
+                    c.Responsible != null ? c.Responsible.Name : null
+                ))
+                .FirstOrDefaultAsync();
         }
 
-
-        public List<Cell> Get(int pageNumber, int pageQuantity)
+        public async Task<List<CellResponseDTO>> GetAsync(int pageNumber, int pageQuantity)
         {
-            return _context.Cells
+            return await _context.Cells
+                .Include(c => c.Church)
+                .Include(c => c.Responsible)
                 .OrderBy(c => c.Id)
                 .Skip((pageNumber - 1) * pageQuantity)
                 .Take(pageQuantity)
-                .ToList();
+                .Select(c => new CellResponseDTO(
+                    c.Id,
+                    c.Name,
+                    c.ChurchId,
+                    c.Church.Name,
+                    c.ResponsibleId,
+                    c.Responsible != null ? c.Responsible.Name : null
+                ))
+                .ToListAsync();
         }
 
-        public List<Cell> GetByChurchId(Member leader)
+        public async Task<List<CellResponseDTO>> GetByChurchIdAsync(Member leader)
         {
-            return _context.Cells
-                .Where(c => c.ResponsibleId == leader.Id)
-                .ToList();
+            return await _context.Cells
+                .Include(c => c.Church)
+                .Include(c => c.Responsible)
+                .Where(c => c.Church.MinisterId == leader.Id)
+                .Select(c => new CellResponseDTO(
+                    c.Id,
+                    c.Name,
+                    c.ChurchId,
+                    c.Church.Name,
+                    c.ResponsibleId,
+                    c.Responsible != null ? c.Responsible.Name : null
+                ))
+                .ToListAsync();
         }
 
-        public void Delete(long id)
+        public async Task<bool> UpdateAsync(long id, Cell updatedCell)
         {
-            var cell = GetById(id);
-            if (cell != null)
-                _context.Cells.Remove(cell);
+            var cell = await _context.Cells.FirstOrDefaultAsync(c => c.Id == id);
+            if (cell == null)
+                return false;
+            
+            cell.SetName(updatedCell.Name);
+            cell.SetChurch(updatedCell.ChurchId);
+            cell.SetResponsible(updatedCell.ResponsibleId ?? 0);
+
+            _context.Cells.Update(cell);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
-        public void Save()
+        public async Task<bool> DeleteAsync(long id)
         {
-            _context.SaveChanges();
+            var cell = await _context.Cells.FirstOrDefaultAsync(c => c.Id == id);
+            if (cell == null)
+                return false;
+
+            _context.Cells.Remove(cell);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

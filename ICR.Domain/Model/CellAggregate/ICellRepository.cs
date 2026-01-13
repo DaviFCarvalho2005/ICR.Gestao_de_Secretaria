@@ -1,3 +1,4 @@
+using ICR.Domain.DTOs;
 using ICR.Domain.Model.MemberAggregate;
 
 using System.Collections.Generic;
@@ -6,13 +7,18 @@ namespace ICR.Domain.Model.CellAggregate
 {
     public interface ICellRepository
     {
-        void Add(Cell cell);
-        Cell? GetById(long id);
-        List<Cell> Get(int pageNumber, int pageQuantity);
-        List<Cell> GetByChurchId(Member leader);
+        Task AddAsync(Cell cell);
 
-        void Delete(long id);
-        void Save();
+        Task<CellResponseDTO?> GetByIdAsync(long id);
 
+        Task<List<CellResponseDTO>> GetAsync(int pageNumber, int pageQuantity);
+
+        Task<List<CellResponseDTO>> GetByChurchIdAsync(Member leader);
+
+        Task<bool> DeleteAsync(long id);
+        Task<bool> UpdateAsync(long id, Cell updatedCell);
+
+        Task SaveAsync();
     }
+
 }

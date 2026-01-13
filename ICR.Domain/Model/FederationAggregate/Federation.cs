@@ -1,4 +1,5 @@
 ﻿using ICR.Domain.Model;
+using ICR.Domain.Model.MinisterAggregate;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,8 +15,9 @@ namespace ICR.Domain.Model.FederationAggregate
         public string Name { get; set; } // Nome da comissão federada
         [ForeignKey("MinisterId")]
         public long? MinisterId { get; set; } //Id do pastor responsável pela comissão federada
+        public Minister? Minister { get; set; } // Pastor responsável pela comissão federada
         // Construtor principal
-        public Federation(string name, long id, long? ministerId)
+        public Federation( long id, string name, long? ministerId)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
