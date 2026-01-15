@@ -55,7 +55,6 @@ namespace ICR.Infra
 
             // UserRole chave composta (isso aqui SEMPRE esquecem)
             modelBuilder.Entity<UserRole>()
-                .HasKey(ur => new { ur.UserId, ur.RoleId });
         }
     }
 }
