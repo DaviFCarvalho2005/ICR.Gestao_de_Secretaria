@@ -3,6 +3,7 @@ using ICR.Application.Mapping;
 using ICR.Application.Services;
 using ICR.Domain.Model;
 using ICR.Domain.Model.CellAggregate;
+using ICR.Domain.Model.DashboardAggregate;
 using ICR.Domain.Model.FamilyAggregate;
 using ICR.Domain.Model.FederationAggregate;
 using ICR.Domain.Model.MinisterAggregate;
